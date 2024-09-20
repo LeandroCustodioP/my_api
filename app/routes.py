@@ -36,15 +36,16 @@ def get_user(id):
 
 # Endpoint para atualizar as informações de um usuário
 @app.route('/users/<int:id>', methods=['PUT'])
-def update_user(id):
-    data = request.get_json()
-    user = User.query.get_or_404(id)
-    if 'username' in data:
-        user.username = data['username']
-    if 'email' in data:
-        user.email = data['email']
-    db.session.commit()
-    return jsonify({"message": "User updated successfully!"})
+def create_user():
+    try:
+        data = request.get_json()
+        # Validação dos dados com o schema
+        validated_data = user_schema.load(data)
+        # Supondo que aqui você inseriria no banco de dados
+        return jsonify({"message": "User created successfully", "data": validated_data}), 201
+    except ValidationError as err:
+        # Retornando os erros de validação
+        return jsonify(err.messages), 400
 
 # Endpoint para excluir um usuário
 @app.route('/users/<int:id>', methods=['DELETE'])
